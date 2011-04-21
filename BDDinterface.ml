@@ -45,7 +45,7 @@ module type BDD =
     * sat_count will return the number of solutions to the Boolean function
     * given f(x) = 1
     *)
-    val sat_count: bdd -> int
+    val sat_count: bdd -> float
 
     (*
      * any_sat returns any truth assignment

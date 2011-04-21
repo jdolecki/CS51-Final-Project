@@ -191,6 +191,10 @@ module BDD =
       in build' exp 1
     ;;
 
+    (* 
+     * sat_count returns a count of truth assignments leading to a True
+     * terminal. 
+     *)
     let sat_count () : float = 
       let rec count (u : int) : float = 
         if u == 0 then 0.
@@ -204,6 +208,20 @@ module BDD =
               ((2. ** float_of_int(high_var - (var u) - 1)) *. (count(high_u)))
       in let len = Hashtbl.length t in 
         (count(len - 1) *. (2.**(float_of_int(var (len - 1)) -. 1.)))
+    ;;
+
+    exception NoSolutionFound;;
+
+    let any_sat () : (variable * expression) list  = 
+      let rec loop (u : int) : (variable * expression) list = 
+        let low_u = Hashtbl.find h (low u) in
+        let high_u = Hashtbl.find h (high u) in
+        let var = var u in
+        if u == 0 then raise NoSolutionFound
+        else if u == 1 then []
+        else if low_u == 0 then (var, True)::(loop (high_u))
+        else (var, False)::(loop(low_u))
+      in let len = Hashtbl.length t in loop(len - 1)
     ;;
 
     let a = And(Var(1), Var(2));;
