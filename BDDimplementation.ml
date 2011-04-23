@@ -172,6 +172,8 @@ module BDD =
      *                     Node (4, Zero, One))))
      *) 
     let build (exp : expression) : bdd = 
+      let _ = Hashtbl.clear t in
+      let _ = Hashtbl.clear h in
       let rec build' (e : expression) (i : int) : bdd =
         match e with 
           | True -> 
