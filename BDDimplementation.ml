@@ -224,6 +224,28 @@ module BDD =
       in let len = Hashtbl.length t in loop(len - 1)
     ;;
 
+    
+   
+    let all_sat() : (variable * expression) list list =
+      let rec all (u: int) : (variable * expression) list list = 
+	let low_u = Hashtbl.find h (low u) in
+	let high_u = Hashtbl.find h (high u) in
+	let var = var u in
+
+        if u == 0 then []
+	else if u == 1 then [[]]
+	else  
+	  (List.map (fun a-> (var, False)::a) (all(low_u)))@
+	  (List.map (fun a-> (var, True)::a) (all(high_u))) in
+      
+      let len = Hashtbl.length t in
+      all(len - 1)
+    ;;
+
+
+
+
+
     let a = And(Var(1), Var(2));;
     let a = And(Or(Var(1), Var(2)), Neg(a));;
     let b = build a;;
@@ -232,4 +254,7 @@ module BDD =
     let neg = Neg (Var 1);;
     let n = build neg;;
     let f = And(False, False);;
-  end
+
+
+
+end
