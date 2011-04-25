@@ -14,20 +14,18 @@
 (* An interface for BDD module *)
 module type BDD =
   sig
-    type variable (* abstract type for a variable *)
- 
     type bdd (* abstract type for bdd *)
   
     type expression (* abstract type for boolean expression *)
 
-    type op (* abstract type for boolean operators *)
+    type operation (* abstract type for boolean operators *)
 
     (*
      * make builds a node out of an expression and ensures the bdd is reduced
      * as outlined in ¡°An Introduction to Binary Decision Diagrams¡± 
      * by Andersen.
      *)
-    val make: bdd -> bdd
+    val make: int -> bdd -> bdd -> bdd
 
     (* 
      * build takes an expression and returns its binary decision diagram. this
@@ -50,18 +48,19 @@ module type BDD =
     (*
      * any_sat returns any truth assignment
      *)
-    val any_sat: bdd -> int list
+    val any_sat: bdd -> int * expression list
 
     (*
      * all_sat returns all satisfying truth assignment
      *)
-    val all_sat: bdd -> int list list
+    val all_sat: bdd -> (int * expression) list list
+
+    val restrict: bdd -> (expression * expression) -> bdd
+
 
     (* TO DO Cool things like print and other extra features 
 
     val print: bdd -> unit
-
-    val restrict: bdd -> assignment -> bdd
 
     val random_sat: bdd -> int list
   

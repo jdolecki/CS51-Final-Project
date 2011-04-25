@@ -17,7 +17,7 @@ open BDDinterface ;;
 (* An interface for BDD module *)
 module BDD =
   struct
-    (* expressions are *)
+    (* abstract data type for expressions *)
     type expression =
       | False
       | True
@@ -27,7 +27,8 @@ module BDD =
       | Imp of expression * expression (* ->, implication *)
       | BImp of expression * expression (* <->, bi-implication *)
       | Neg of expression (* -, negation *)
-
+    
+    (* abstract data type for Boolean operations, used in apply *)
     type operation = 
       | OpAnd
       | OpOr
@@ -56,15 +57,17 @@ module BDD =
     (* increments an index given to each entry in the hash table *)
     let increment = let u = ref 1 in fun () -> incr u; !u;;
 
+    (* exception thrown by var if a terminal node is reached *)
     exception TerminalNode;;
 
-    (* *)
+    (* returns the variable number of a node *)
     let var (u : int) : int = 
       match Hashtbl.find t u with
         | Node(i, _, _) -> i
         | Zero | One -> raise TerminalNode
     ;;
 
+    (* returns the low branch of a node *)
     let low (u : int) : bdd = 
       match Hashtbl.find t u with
         | Zero -> Zero
@@ -72,6 +75,7 @@ module BDD =
         | Node(_, l, _) -> l
     ;;
             
+    (* returns the high branch of a node *)
     let high (u : int) : bdd = 
       match Hashtbl.find t u with
         | Zero -> Zero
@@ -79,6 +83,9 @@ module BDD =
         | Node(_, _, h) -> h
     ;;
 
+    (* eval reduces the boolean expression at each step of building the bdd. 
+     * If the current expression is still not completely filled with True or 
+     *  False, eval returns the unaltered expression. *)
     let rec eval (exp: expression) : expression = 
       match exp with
         | True -> True
@@ -124,17 +131,24 @@ module BDD =
           )
     ;;
     
+    (* var_bool checks whether a variable is present in the current expression
+     * Revisit: Is this necessary if variables are in correct (1, 2, 3...) 
+     * ordering. I currently don't think so. 
+     *)
     let rec var_bool (v : expression) (e : expression) : bool = 
       match e with
         | True -> false
         | False -> false
-        | Var i -> let Var j = v in j == i
+        | Var i -> let Var j = v in j == i (* only important part *)
         | And(x, y) -> var_bool v x || var_bool v y
         | Or(x, y) -> var_bool v x || var_bool v y
         | BImp(x, y) -> var_bool v x || var_bool v y
         | Imp(x, y) -> var_bool v x || var_bool v y
         | Neg x -> var_bool v x;;
 
+    (* returns an expression with the variable v replaced by asgmt 
+     * This function became necessary after we realized that Boolean 
+     * expressions may have repeating variables *)
     let rec var_lookup (v : expression) (e : expression) (asgmt : expression) 
         : expression = 
       match e with
@@ -146,31 +160,6 @@ module BDD =
         | BImp(x, y) -> BImp (var_lookup v x asgmt, var_lookup v y asgmt)
         | Imp(x, y) -> Imp (var_lookup v x asgmt, var_lookup v y asgmt)
         | Neg x -> Neg (var_lookup v x asgmt);;
-    
-    (* 
-     * shannon function will take an expression and return the expression
-     * after taking a single variable and changing it to a given assignment
-     * Example: shannon (Var x) (False) should return False
-     *)
-    let rec shannon (exp: expression) (a: expression) : expression =
-      match exp with
-        | True -> True
-        | False -> False 
-        | Var i -> a
-        | Neg x -> eval (Neg (shannon x a))
-        | And(x,y) -> 
-            if (x = True || x = False) then eval (And(eval x, shannon y a))
-            else eval (And(shannon x a, y))
-        | Or(x,y) ->
-            if (x = True || x = False) then eval (Or(eval x, shannon y a))
-            else eval (Or(shannon x a, y))
-        | Imp(x,y) -> 
-            if (x = True || x = False) then eval (Imp(eval x, shannon y a))
-            else eval (Imp(shannon x a, y))
-        | BImp(x,y) ->
-            if (x = True || x = False) then eval (BImp(eval x, shannon y a))
-            else eval (BImp(shannon x a, y))
-    ;;
 
     (* make creates each node
      * First, it checks whether hash table h already holds a node with the
@@ -203,22 +192,28 @@ module BDD =
       let rec build' (e : expression) (i : int) : bdd =
         match e with 
           | True -> 
+              (* Add One to the hash table *)
               if Hashtbl.mem h (One) then One
               else
                 let _ = Hashtbl.add h (One) (1) in 
                 let _ = Hashtbl.add t 1 (One) in One
           | False -> 
+              (* Add Zero to the hash table *)
               if Hashtbl.mem h (Zero) then Zero
               else
                 let _ = Hashtbl.add h (Zero) (0) in 
                 let _ = Hashtbl.add t 0 (Zero) in Zero
           | _ -> 
+              (* Check if the variable i is in the expression, move on if not*)
               if var_bool (Var i) e then
+                (* recursively call build on low and high branches after var i
+                 * is replaced with True for high branch and False for low
+                 * branch *)
                 let low = 
                   build' (eval (var_lookup (Var i) e False)) (i+1) in
                 let high = build' (eval (var_lookup (Var i) e True)) (i+1) in
                   make (i) (low) (high)
-              else build' (eval e) (i + 1)
+              else build' (eval e) (i + 1) (* make creates the node *)
       in build' exp 1
     ;;
 
@@ -247,8 +242,12 @@ module BDD =
         if u == 0 then 0. else 1.
     ;;
 
+    (* Exception thrown in case any_sat encounters 0 *)
     exception NoSolutionFound;;
 
+    (* returns a greedy solution to the BDD 
+     * Note: Because this algorithm is greedy, it fails to find a solution for
+     * functions that aren't well-behaved. Greediness gives O(n) runtime *)
     let any_sat (b : bdd) : (int * expression) list  = 
       let u = Hashtbl.find h b in
       let rec loop (u : int) : (int * expression) list = 
@@ -263,6 +262,7 @@ module BDD =
       in loop u
     ;;
 
+    (* Coolest function all_sat. Finds all satisfying assignments for the bdd *)
     let all_sat (b : bdd) : (int * expression) list list =
       let u = Hashtbl.find h b in
       let rec all (u: int) : (int * expression) list list = 
@@ -277,8 +277,12 @@ module BDD =
       in all u
     ;;
 
+    (* Exception thrown in a weird case which will not happen *)
     exception InvalidInput;;
-
+    
+    (* Apply takes two bdds and a boolean op of type operation and returns
+     * a new bdd that is a product of that operation. 
+     * Revisit: Can apply be used to construct bdds? *)
     let apply (op : operation) (b1 : bdd) (b2 : bdd) : bdd =
       let rec app (b1 : bdd) (b2 : bdd) : bdd =
         let u1 = Hashtbl.find h b1 in
@@ -324,16 +328,46 @@ module BDD =
             make (var u2) (app b1 (low u2)) (app b1 (high u2))
       in app b1 b2;;
 
+    (* restrict takes a variable and a variable assignment and returns a 
+     * restructured bdd with the given variable factored out. Also, really 
+     * cool. *)
+    let restrict (b: bdd) (asn: expression * expression) : bdd =
+      let init = Hashtbl.find h b in
+      let rec res (u: int) : bdd = (
+      match asn with
+	| (Var j, z) -> 
+	      (* detects base cases *)
+	      if u == 0 then Zero
+	      else if(u == 1) then One
+	      (* traverses BDD *)
+	      else  
+		try 
+		  let j1 = var j in
+		  let v1 = var u in
+		  let low_u = Hashtbl.find h (low u) in
+		  let high_u = Hashtbl.find h (high u) in 
+		  if(v1 > j1) then Hashtbl.find t u
+		  else if(v1 < j1) then make (v1) (res (low_u)) (res (high_u)) 	
+		  else 
+		    if(z == False) then res (low_u)
+		    else res (high_u)
+		(* if we encounter a terminal node *)
+		with TerminalNode -> 
+		  let v1 = var u in
+		  let low_u = Hashtbl.find h (low u) in
+		  let high_u = Hashtbl.find h (high u) in
+		  if(z == False) then low u
+		  else high u
+	| _ -> raise InvalidInput )
+	in
+	res (init)
+    ;;
 
-
-    let a = And(Var, Var);;
-    let a = And(Or(Var, Var), Neg a);;
+    (* TESTING - TO DO *)
+    let a = And(Var 3, Var 4);;
+    let a = And(Or(Var 1, Var 2), Neg a);;
     let b = build a;;
-    let paper_example = And(BImp(Var 1, Var 2), BImp(Var 1, Var 3));;
+    let paper_example = And(BImp(Var 1, Var 2), BImp(Var 3, Var 4));;
     let paper = build paper_example;;
-    let neg = Neg (Var);;
-    let n = build neg;;
-    let f = And(False, False);;
-    let im = build f;;
-    let test_apply = Node(3, Node(4, Node()), Node(4))
+   
 end
