@@ -17,13 +17,11 @@ open BDDinterface ;;
 (* An interface for BDD module *)
 module BDD =
   struct
-    open Bigarray ;;
-    
     (* expressions are *)
     type expression =
       | False
       | True
-      | Var
+      | Var of int
       | And of expression * expression (* && *)
       | Or of expression * expression (* || *)
       | Imp of expression * expression (* ->, implication *)
@@ -85,12 +83,12 @@ module BDD =
       match exp with
         | True -> True
         | False -> False
-        | Var -> Var
+        | Var i -> Var i
         | Neg x -> (
             match x with
               | True -> False
               | False -> True
-              | e1 -> Neg x
+              | _ -> Neg (eval x)
           )
         | And(x,y) -> (
             match (x,y) with
@@ -98,7 +96,7 @@ module BDD =
               | (True,False) -> False
               | (False, True) -> False
               | (False, False) -> False
-              | (e1,e2) -> And(x,y)
+              | (_, _) -> And(eval x, eval y)
           )
         | Or(x,y) ->  (
             match (x,y) with 
@@ -106,7 +104,7 @@ module BDD =
               | (True, False) -> True
               | (False, True) -> True
               | (False, False) -> False
-              | (e1,e2) -> Or(x,y)
+              | (_, _) -> Or(eval x,eval y)
           )
         | Imp(x,y) -> (
             match (x,y) with 
@@ -114,7 +112,7 @@ module BDD =
               | (True,False) -> False
               | (False, True) -> True
               | (False, False) -> True
-              | (e1,e2) -> Imp(x,y)
+              | (_, _) -> Imp(eval x,eval y)
           )
         | BImp(x,y) -> (
             match (x,y) with
@@ -122,9 +120,32 @@ module BDD =
               | (True,False) -> False 
               | (False, True) -> False
               | (False, False) -> True
-              | (e1,e2) -> BImp(x,y)
+              | (_, _) -> BImp(eval x,eval y)
           )
     ;;
+    
+    let rec var_bool (v : expression) (e : expression) : bool = 
+      match e with
+        | True -> false
+        | False -> false
+        | Var i -> let Var j = v in j == i
+        | And(x, y) -> var_bool v x || var_bool v y
+        | Or(x, y) -> var_bool v x || var_bool v y
+        | BImp(x, y) -> var_bool v x || var_bool v y
+        | Imp(x, y) -> var_bool v x || var_bool v y
+        | Neg x -> var_bool v x;;
+
+    let rec var_lookup (v : expression) (e : expression) (asgmt : expression) 
+        : expression = 
+      match e with
+        | True -> True
+        | False -> False
+        | Var i -> let Var j = v in if j == i then asgmt else e
+        | And(x, y) -> And (var_lookup v x asgmt, var_lookup v y asgmt)
+        | Or(x, y) -> Or (var_lookup v x asgmt, var_lookup v y asgmt)
+        | BImp(x, y) -> BImp (var_lookup v x asgmt, var_lookup v y asgmt)
+        | Imp(x, y) -> Imp (var_lookup v x asgmt, var_lookup v y asgmt)
+        | Neg x -> Neg (var_lookup v x asgmt);;
     
     (* 
      * shannon function will take an expression and return the expression
@@ -135,7 +156,7 @@ module BDD =
       match exp with
         | True -> True
         | False -> False 
-        | Var -> a
+        | Var i -> a
         | Neg x -> eval (Neg (shannon x a))
         | And(x,y) -> 
             if (x = True || x = False) then eval (And(eval x, shannon y a))
@@ -192,9 +213,12 @@ module BDD =
                 let _ = Hashtbl.add h (Zero) (0) in 
                 let _ = Hashtbl.add t 0 (Zero) in Zero
           | _ -> 
-              let low = build' (shannon e False) (i+1) in
-              let high = build' (shannon e True) (i+1) in
-                make (i) (low) (high)
+              if var_bool (Var i) e then
+                let low = 
+                  build' (eval (var_lookup (Var i) e False)) (i+1) in
+                let high = build' (eval (var_lookup (Var i) e True)) (i+1) in
+                  make (i) (low) (high)
+              else build' (eval e) (i + 1)
       in build' exp 1
     ;;
 
@@ -305,7 +329,7 @@ module BDD =
     let a = And(Var, Var);;
     let a = And(Or(Var, Var), Neg a);;
     let b = build a;;
-    let paper_example = And(BImp(Var, Var), BImp(Var, Var));;
+    let paper_example = And(BImp(Var 1, Var 2), BImp(Var 1, Var 3));;
     let paper = build paper_example;;
     let neg = Neg (Var);;
     let n = build neg;;
