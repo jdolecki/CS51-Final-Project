@@ -12,8 +12,6 @@
  *)
 
 (* An implementation of the BDD module *)
-(*module BDD =
-  struct*)
     (* abstract data type for expressions *)
     type expression =
       | False
@@ -363,6 +361,4 @@
     let b = build a;;
     let paper_example = And(BImp(Var 1, Var 2), BImp(Var 3, Var 4));;
     let paper = build paper_example;;
-(*   
-end
-*)
+
