@@ -1,0 +1,22 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="BDD" rel="Chapter" href="BDD.html"><title>BDD</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;bdd<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;expression<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;operation<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;make&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;build&nbsp;:&nbsp;<span class="constructor">BDD</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;apply&nbsp;:&nbsp;<span class="constructor">BDD</span>.operation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sat_count&nbsp;:&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;any_sat&nbsp;:&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;<span class="constructor">BDD</span>.expression)&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;all_sat&nbsp;:&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;<span class="constructor">BDD</span>.expression)&nbsp;list&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;restrict&nbsp;:&nbsp;<span class="constructor">BDD</span>.bdd&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.expression&nbsp;*&nbsp;<span class="constructor">BDD</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">BDD</span>.bdd<br>
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="BDD" rel="Chapter" href="BDD.html"><title>BDD</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="index.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_BDD.html">BDD</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> BDD: <code class="code">sig</code> <a href="BDD.html">..</a> <code class="code">end</code></pre>Abstract type for binary decision diagrams.<br>
+<hr width="100%">
+<pre><span id="TYPEbdd"><span class="keyword">type</span> <code class="type"></code>bdd</span> </pre>
+<div class="info">
+Abstract type for binary decision diagrams.<br>
+</div>
+
+<pre><span id="TYPEexpression"><span class="keyword">type</span> <code class="type"></code>expression</span> </pre>
+<div class="info">
+Abstract type for boolean expression .<br>
+</div>
+
+<pre><span id="TYPEoperation"><span class="keyword">type</span> <code class="type"></code>operation</span> </pre>
+<div class="info">
+Abstract type for boolean operators<br>
+</div>
+
+<pre><span id="VALmake"><span class="keyword">val</span> make</span> : <code class="type">int -> <a href="BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.html#TYPEbdd">bdd</a></code></pre><div class="info">
+Make builds a node out of an expression and ensures the bdd is reduced
+     as outlined in 'An Introduction to Binary Decision Diagrams' 
+     by Andersen. It returns that node, as well.<br>
+</div>
+<pre><span id="VALbuild"><span class="keyword">val</span> build</span> : <code class="type"><a href="BDD.html#TYPEexpression">expression</a> -> <a href="BDD.html#TYPEbdd">bdd</a></code></pre><div class="info">
+Build takes an expression and recursively constructs its binary decision 
+     diagram. It primarily uses Make for constructing each Node. Given 
+     expression should have variables given in order 1, 2, 3... if the user
+     wants correct sat_count solutions.<br>
+</div>
+<pre><span id="VALapply"><span class="keyword">val</span> apply</span> : <code class="type"><a href="BDD.html#TYPEoperation">operation</a> -> <a href="BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.html#TYPEbdd">bdd</a></code></pre><div class="info">
+Apply takes a boolean operator of type operation and two bdds, and 
+     returns a new bdd that is the result of the given operation.<br>
+</div>
+<pre><span id="VALsat_count"><span class="keyword">val</span> sat_count</span> : <code class="type"><a href="BDD.html#TYPEbdd">bdd</a> -> float</code></pre><div class="info">
+Sat_count returns the number of solutions to the Boolean function
+    given f(x) = 1.<br>
+</div>
+<pre><span id="VALany_sat"><span class="keyword">val</span> any_sat</span> : <code class="type"><a href="BDD.html#TYPEbdd">bdd</a> -> (int * <a href="BDD.html#TYPEexpression">expression</a>) list</code></pre><div class="info">
+Any_sat returns a list of variable assignments that result in f(x) = 1. 
+     The path any_sat takes is greedy, and it may fail in the case of functions
+     that aren't well behaved. In those cases, NoSolutionFound exception is 
+     thrown and all_sat should be used to find the solution.<br>
+</div>
+<pre><span id="VALall_sat"><span class="keyword">val</span> all_sat</span> : <code class="type"><a href="BDD.html#TYPEbdd">bdd</a> -> (int * <a href="BDD.html#TYPEexpression">expression</a>) list list</code></pre><div class="info">
+All_sat returns all satisfying variable assignments that result in f(x)=1 
+     where f(x) is the boolean expression for the given bdd.<br>
+</div>
+<pre><span id="VALrestrict"><span class="keyword">val</span> restrict</span> : <code class="type"><a href="BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.html#TYPEexpression">expression</a> * <a href="BDD.html#TYPEexpression">expression</a> -> <a href="BDD.html#TYPEbdd">bdd</a></code></pre><div class="info">
+restrict takes a variable assignment and a bdd and returns the new, 
+     simplified bdd. Variable assignments should be passed as (var number, 
+     True/False).<br>
+</div>
+</body></html>
