@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="BDD.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="BDD" rel="Chapter" href="BDD.html"><title>BDD.BDD</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="BDD.html">Up</a>
+&nbsp;</div>
+<center><h1>Module type <a href="type_BDD.BDD.html">BDD.BDD</a></h1></center>
+<br>
+<pre><span class="keyword">module type</span> BDD = <code class="code">sig</code> <a href="BDD.BDD.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<pre><span id="TYPEbdd"><span class="keyword">type</span> <code class="type"></code>bdd</span> </pre>
+
+<pre><span id="TYPEexpression"><span class="keyword">type</span> <code class="type"></code>expression</span> </pre>
+
+<pre><span id="TYPEoperation"><span class="keyword">type</span> <code class="type"></code>operation</span> </pre>
+
+<pre><span id="VALmake"><span class="keyword">val</span> make</span> : <code class="type">int -> <a href="BDD.BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a></code></pre><pre><span id="VALbuild"><span class="keyword">val</span> build</span> : <code class="type"><a href="BDD.BDD.html#TYPEexpression">expression</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a></code></pre><pre><span id="VALapply"><span class="keyword">val</span> apply</span> : <code class="type"><a href="BDD.BDD.html#TYPEoperation">operation</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a></code></pre><pre><span id="VALsat_count"><span class="keyword">val</span> sat_count</span> : <code class="type"><a href="BDD.BDD.html#TYPEbdd">bdd</a> -> float</code></pre><pre><span id="VALany_sat"><span class="keyword">val</span> any_sat</span> : <code class="type"><a href="BDD.BDD.html#TYPEbdd">bdd</a> -> int * <a href="BDD.BDD.html#TYPEexpression">expression</a> list</code></pre><pre><span id="VALall_sat"><span class="keyword">val</span> all_sat</span> : <code class="type"><a href="BDD.BDD.html#TYPEbdd">bdd</a> -> (int * <a href="BDD.BDD.html#TYPEexpression">expression</a>) list list</code></pre><pre><span id="VALrestrict"><span class="keyword">val</span> restrict</span> : <code class="type"><a href="BDD.BDD.html#TYPEbdd">bdd</a> -> <a href="BDD.BDD.html#TYPEexpression">expression</a> * <a href="BDD.BDD.html#TYPEexpression">expression</a> -> <a href="BDD.BDD.html#TYPEbdd">bdd</a></code></pre></body></html>
