@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>
+BDD.mli</title>
+  <meta name="GENERATOR" content="caml2html 1.4.1">
+<style type="text/css">
+code,pre { color:black;background-color:white }a.Cannot { color:black;text-decoration:none }.Cannot:hover { background-color: #b4eeb4; }
+.Cbar,
+.Cdo,
+.Cdone,
+.Cdownto,
+.Celse,
+.Cfor,
+.Cif,
+.Clazy,
+.Cmatch,
+.Cnew,
+.Cor,
+.Cthen,
+.Cto,
+.Ctry,
+.Cwhen,
+.Cwhile,
+.Cwith { color: #77aaaa; }
+.Cassert,
+.Cinclude,
+.Copen { color: #cc9900; }
+.Cstring { color: #aa4444; }
+.Cand,
+.Cas,
+.Cclass,
+.Cconstraint,
+.Cexception,
+.Cexternal,
+.Cfun,
+.Cfunction,
+.Cfunctor,
+.Cin,
+.Cinherit,
+.Cinitializer,
+.Clet,
+.Cmethod,
+.Cmodule,
+.Cmutable,
+.Cof,
+.Cprivate,
+.Crec,
+.Ctype,
+.Cval,
+.Cvirtual { color: green; }
+.Cbackground { background-color: white; }
+.Craise { color: red; }
+.Cconstructor { color: #0033cc; }
+.Ccomment { color: #990000; }
+.Calphakeyword,
+.Casr,
+.Cland,
+.Clor,
+.Clsl,
+.Clsr,
+.Clxor,
+.Cmod { color: #808080; }
+.Clinenum { color: black; background-color: silver; }
+.Cbegin,
+.Cend,
+.Cobject,
+.Csig,
+.Cstruct { color: #990099; }
+.Cfalse,
+.Cnonalphakeyword,
+.Cquotation,
+.Ctrue { }
+</style>
+</head>
+<body>
+<h1><a name="BDD.mli"></a><code>BDD.mli</code></h1>
+
+<pre><span class="Clinenum">   1:</span><span class="Cbackground"> </span><span class="Ccomment">(*</span>
+<span class="Clinenum">   2:</span><span class="Cbackground"> </span><span class="Ccomment"> * Team BDD </span>
+<span class="Clinenum">   3:</span><span class="Cbackground"> </span><span class="Ccomment"> * Jakub Dolecki, Sean Murphy, Michael Cioffi</span>
+<span class="Clinenum">   4:</span><span class="Cbackground"> </span><span class="Ccomment"> * Spring, 2011</span>
+<span class="Clinenum">   5:</span><span class="Cbackground"> </span><span class="Ccomment"> * </span>
+<span class="Clinenum">   6:</span><span class="Cbackground"> </span><span class="Ccomment"> * Binary Decision Diagram interface</span>
+<span class="Clinenum">   7:</span><span class="Cbackground"> </span><span class="Ccomment"> * </span>
+<span class="Clinenum">   8:</span><span class="Cbackground"> </span><span class="Ccomment"> * Binary decision diagrams are data structures that are used to represent</span>
+<span class="Clinenum">   9:</span><span class="Cbackground"> </span><span class="Ccomment"> * boolean functions. This project aims to implement a module that can be</span>
+<span class="Clinenum">  10:</span><span class="Cbackground"> </span><span class="Ccomment"> * utilized in creating BDDs and manipulating them.</span>
+<span class="Clinenum">  11:</span><span class="Cbackground"> </span><span class="Ccomment"> *</span>
+<span class="Clinenum">  12:</span><span class="Cbackground"> </span><span class="Ccomment"> *)</span>
+<span class="Clinenum">  13:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  14:</span><span class="Cbackground"> </span><span class="Ccomment">(* An interface for BDD module *)</span>
+<span class="Clinenum">  15:</span><span class="Cbackground"> </span>    <span class="Ctype">type</span> bdd <span class="Ccomment">(** Abstract type for binary decision diagrams. *)</span>
+<span class="Clinenum">  16:</span><span class="Cbackground"> </span>  
+<span class="Clinenum">  17:</span><span class="Cbackground"> </span>    <span class="Ctype">type</span> expression <span class="Ccomment">(** Abstract type for boolean expression .*)</span>
+<span class="Clinenum">  18:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  19:</span><span class="Cbackground"> </span>    <span class="Ctype">type</span> operation <span class="Ccomment">(** Abstract type for boolean operators *)</span>
+<span class="Clinenum">  20:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  21:</span><span class="Cbackground"> </span>    <span class="Ccomment">(**</span>
+<span class="Clinenum">  22:</span><span class="Cbackground"> </span><span class="Ccomment">     Make builds a node out of an expression and ensures the bdd is reduced</span>
+<span class="Clinenum">  23:</span><span class="Cbackground"> </span><span class="Ccomment">     as outlined in 'An Introduction to Binary Decision Diagrams' </span>
+<span class="Clinenum">  24:</span><span class="Cbackground"> </span><span class="Ccomment">     by Andersen. It returns that node, as well. </span>
+<span class="Clinenum">  25:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  26:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> make: int <span class="Cnonalphakeyword">-&gt;</span> bdd <span class="Cnonalphakeyword">-&gt;</span> bdd <span class="Cnonalphakeyword">-&gt;</span> bdd
+<span class="Clinenum">  27:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  28:</span><span class="Cbackground"> </span>    <span class="Ccomment">(**</span>
+<span class="Clinenum">  29:</span><span class="Cbackground"> </span><span class="Ccomment">     Build takes an expression and recursively constructs its binary decision </span>
+<span class="Clinenum">  30:</span><span class="Cbackground"> </span><span class="Ccomment">     diagram. It primarily uses Make for constructing each Node. Given </span>
+<span class="Clinenum">  31:</span><span class="Cbackground"> </span><span class="Ccomment">     expression should have variables given in order 1, 2, 3... if the user</span>
+<span class="Clinenum">  32:</span><span class="Cbackground"> </span><span class="Ccomment">     wants correct sat_count solutions.</span>
+<span class="Clinenum">  33:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  34:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> build: expression <span class="Cnonalphakeyword">-&gt;</span> bdd
+<span class="Clinenum">  35:</span><span class="Cbackground"> </span>    
+<span class="Clinenum">  36:</span><span class="Cbackground"> </span>    <span class="Ccomment">(**</span>
+<span class="Clinenum">  37:</span><span class="Cbackground"> </span><span class="Ccomment">     Apply takes a boolean operator of type operation and two bdds, and </span>
+<span class="Clinenum">  38:</span><span class="Cbackground"> </span><span class="Ccomment">     returns a new bdd that is the result of the given operation.</span>
+<span class="Clinenum">  39:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  40:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> apply: operation <span class="Cnonalphakeyword">-&gt;</span> bdd <span class="Cnonalphakeyword">-&gt;</span> bdd <span class="Cnonalphakeyword">-&gt;</span> bdd
+<span class="Clinenum">  41:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  42:</span><span class="Cbackground"> </span>   <span class="Ccomment">(**</span>
+<span class="Clinenum">  43:</span><span class="Cbackground"> </span><span class="Ccomment">    Sat_count returns the number of solutions to the Boolean function</span>
+<span class="Clinenum">  44:</span><span class="Cbackground"> </span><span class="Ccomment">    given f(x) = 1. </span>
+<span class="Clinenum">  45:</span><span class="Cbackground"> </span><span class="Ccomment">    *)</span>
+<span class="Clinenum">  46:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> sat_count: bdd <span class="Cnonalphakeyword">-&gt;</span> float
+<span class="Clinenum">  47:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  48:</span><span class="Cbackground"> </span>    <span class="Ccomment">(**</span>
+<span class="Clinenum">  49:</span><span class="Cbackground"> </span><span class="Ccomment">     Any_sat returns a list of variable assignments that result in f(x) = 1. </span>
+<span class="Clinenum">  50:</span><span class="Cbackground"> </span><span class="Ccomment">     The path any_sat takes is greedy, and it may fail in the case of functions</span>
+<span class="Clinenum">  51:</span><span class="Cbackground"> </span><span class="Ccomment">     that aren't well behaved. In those cases, NoSolutionFound exception is </span>
+<span class="Clinenum">  52:</span><span class="Cbackground"> </span><span class="Ccomment">     thrown and all_sat should be used to find the solution.</span>
+<span class="Clinenum">  53:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  54:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> any_sat: bdd <span class="Cnonalphakeyword">-&gt;</span> <span class="Cnonalphakeyword">(</span>int <span class="Cnonalphakeyword">*</span> expression<span class="Cnonalphakeyword">)</span> list
+<span class="Clinenum">  55:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  56:</span><span class="Cbackground"> </span>    <span class="Ccomment">(**</span>
+<span class="Clinenum">  57:</span><span class="Cbackground"> </span><span class="Ccomment">     All_sat returns all satisfying variable assignments that result in f(x)=1 </span>
+<span class="Clinenum">  58:</span><span class="Cbackground"> </span><span class="Ccomment">     where f(x) is the boolean expression for the given bdd. </span>
+<span class="Clinenum">  59:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  60:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> all_sat: bdd <span class="Cnonalphakeyword">-&gt;</span> <span class="Cnonalphakeyword">(</span>int <span class="Cnonalphakeyword">*</span> expression<span class="Cnonalphakeyword">)</span> list list
+<span class="Clinenum">  61:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  62:</span><span class="Cbackground"> </span>    <span class="Ccomment">(** </span>
+<span class="Clinenum">  63:</span><span class="Cbackground"> </span><span class="Ccomment">     restrict takes a variable assignment and a bdd and returns the new, </span>
+<span class="Clinenum">  64:</span><span class="Cbackground"> </span><span class="Ccomment">     simplified bdd. Variable assignments should be passed as (var number, </span>
+<span class="Clinenum">  65:</span><span class="Cbackground"> </span><span class="Ccomment">     True/False). </span>
+<span class="Clinenum">  66:</span><span class="Cbackground"> </span><span class="Ccomment">     *)</span>
+<span class="Clinenum">  67:</span><span class="Cbackground"> </span>    <span class="Cval">val</span> restrict: bdd <span class="Cnonalphakeyword">-&gt;</span> <span class="Cnonalphakeyword">(</span>expression <span class="Cnonalphakeyword">*</span> expression<span class="Cnonalphakeyword">)</span> <span class="Cnonalphakeyword">-&gt;</span> bdd
+<span class="Clinenum">  68:</span><span class="Cbackground"> </span>
+<span class="Clinenum">  69:</span><span class="Cbackground"> </span>
+</pre>
+
+<hr>
+<p>
+<em>This document was generated using 
+<a href="http://martin.jambon.free.fr/caml2html.html">caml2html</a></em>
+</body>
+</html>
