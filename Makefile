@@ -14,4 +14,4 @@ BDDgui.exe:
 	ocamlc -g -o BDDgui.exe BDD.cmo lexer.cmo parser.cmo print.cmo BDDgui.ml
 	
 clean: 
-	rm -f BDDgui.exe lexer.ml parser.ml parser.mli *.cmi *.cmo
+	rm -f BDDgui.exe camlprog* lexer.ml parser.ml parser.mli *.cmi *.cmo
