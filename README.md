@@ -8,7 +8,7 @@ Binary decision diagrams (BDDs) belong to a class of data structures that repres
 Why I wrote it
 --------------
 
-This project was a team submission for a class final assignment. We chose BDDs because of their utility in a variety of combinatorial problems such as circuit testing and finding shortest paths. Their importance was recognized by Donald Knuth who called them “one of the only really fundamental data structures that came out in the last twenty-five years.”
+This project was a team submission for a class final assignment. We chose BDDs because of their utility in a variety of combinatorial problems such as circuit testing and finding shortest paths. Their importance was recognized by Donald Knuth who called them "one of the only really fundamental data structures that came out in the last twenty-five years."
 
 Why I'm proud of it
 -------------------
